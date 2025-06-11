@@ -1,6 +1,6 @@
 
 import Image from "next/image";
-import { allGames, getPlatforms, fetshAllData, fetchPlatforms, fetshGamesByplatFrorm, getGamesByplatform, fetshGameDetails, fetshGamesByTags } from "./asset/data"
+import { allGames, getPlatforms, fetshAllData, fetchPlatforms, fetshGamesByplatFrorm, getGamesByplatform, fetshGameDetails, fetshGamesByTags } from "./(asset)/data"
 export default async function Home() {
   const data = getGamesByTags("3d.mmorpg.fantasy.pvp")
   console.log(data)
