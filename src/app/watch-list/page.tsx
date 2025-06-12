@@ -5,7 +5,7 @@ import { useWishlist } from '../context/WishlistContext';
 import GameCard from '../(components)/shared/GameCard';
 import Link from 'next/link';
 import SharedButton from '../(components)/shared/SharedButton';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/(components)/ui/button';
 import { Trash2 } from 'lucide-react';
 
 export default function WishlistPage() {
@@ -23,17 +23,17 @@ export default function WishlistPage() {
           </div>
 
           {wishlist.length > 0 && (
-           <Button
-  variant="outline"
-  onClick={() => {
-    clearWishlist();
-    toast.success("Wishlist cleared");
-  }}
-  className="mt-4 sm:mt-0 hover:bg-destructive/10 hover:text-destructive gap-2 border-destructive"
->
-  <Trash2 className="w-4 h-4" />
-  Clear All
-</Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                clearWishlist();
+                toast.success("Wishlist cleared");
+              }}
+              className="mt-4 sm:mt-0 hover:bg-destructive/10 hover:text-destructive gap-2 border-destructive"
+            >
+              <Trash2 className="w-4 h-4" />
+              Clear All
+            </Button>
 
           )}
         </div>

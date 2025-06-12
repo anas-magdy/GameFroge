@@ -3,10 +3,10 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useWishlist, Game } from '../context/WishlistContext';
 import GameCard from '../(components)/shared/GameCard';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/(components)/ui/button';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { fetshAllData } from '@/lib/data';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/app/(components)/ui/input';
 
 interface ApiGame {
   id: number;
@@ -151,11 +151,11 @@ export default function GamesPage() {
               <ChevronLeft className="w-4 h-4" />
               Previous
             </Button>
-            
+
             <span className="text-sm">
               Page {currentPage} of {totalPages}
             </span>
-            
+
             <Button
               variant="outline"
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -174,6 +174,7 @@ export default function GamesPage() {
           </div>
         )}
       </div>
+
     </div>
   );
 }

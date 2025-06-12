@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Gamepad2, Heart } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/(components)/ui/button';
 
 export default function Navbar() {
   return (
@@ -13,7 +13,7 @@ export default function Navbar() {
               Game Store
             </Link>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <Link href="/games">
               <Button variant="ghost" className="gap-2">

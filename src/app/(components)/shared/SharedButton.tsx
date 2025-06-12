@@ -9,7 +9,7 @@ import {
   Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/app/(components)/ui/button";
 
 type SharedButtonProps = {
   onClick?: () => void;
@@ -58,7 +58,7 @@ export default function SharedButton(props: SharedButtonProps) {
     type = "button",
     disabled = false,
     isActive = false,
-   
+
     children,
   } = props;
 
@@ -69,7 +69,7 @@ export default function SharedButton(props: SharedButtonProps) {
       type={type}
       onClick={onClick}
       disabled={disabled}
-    
+
       className={cn(
         buttonVariants({ variant, size }),
         "group relative overflow-hidden font-semibold rounded-xl shadow-md transition-all",
