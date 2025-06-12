@@ -41,18 +41,17 @@ export default function GameCard({
   insideImageOnly = false,
   className = "",
 }: GameCardProps) {
-const handleWishlistToggle = (e: MouseEvent<HTMLButtonElement>) => {
-  e.stopPropagation();
-  if (onWishlistToggle && title) {
-    onWishlistToggle(title);
-    toast.success(
-      isWishlisted
-        ? `${title} removed from wishlist`
-        : `${title} added to wishlist`
-    );
-  }
-};
-
+  const handleWishlistToggle = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (onWishlistToggle && title) {
+      onWishlistToggle(title);
+      toast.success(
+        isWishlisted
+          ? `${title} removed from wishlist`
+          : `${title} added to wishlist`
+      );
+    }
+  };
 
   const wishButtonStyle = deleteIcon ? "top-3 right-12" : "top-3 right-3";
 
@@ -71,10 +70,10 @@ const handleWishlistToggle = (e: MouseEvent<HTMLButtonElement>) => {
             <Image
               src={imageUrl}
               alt={title}
-              width={320}
-              height={160}
-              priority
+              fill
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={false}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
@@ -120,10 +119,10 @@ const handleWishlistToggle = (e: MouseEvent<HTMLButtonElement>) => {
               <Image
                 src={imageUrl}
                 alt={title}
-                width={320}
-                height={192}
+                fill
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={false}
               />
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-2xl">
                 <h3 className="text-white font-bold text-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
