@@ -3,7 +3,7 @@ import "./globals.css";
 import { WishlistProvider } from "./context/WishlistContext";
 import { Toaster } from "sonner";
 import Navbar from "./(components)/shared/Navbar";
-
+import Footer from "./(components)/shared/Footer";
 const orbitron = Orbitron({
   subsets: ["latin"],
   weight: ["400", "700"],
@@ -31,6 +31,7 @@ export default function RootLayout({
             {children}
           </main>
           <Toaster richColors position="top-center" />
+          <Footer></Footer>
         </WishlistProvider>
       </body>
     </html>

@@ -3,8 +3,8 @@ import { toast } from 'sonner';
 
 import React, { MouseEvent, ReactNode } from "react";
 import Image from "next/image";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/app/(components)/ui/card";
+import { Button } from "@/app/(components)/ui/button";
 import { Heart, Star, Trash2 } from "lucide-react";
 import SharedButton from "./SharedButton";
 
@@ -89,11 +89,10 @@ export default function GameCard({
                 size="icon"
                 variant="ghost"
                 onClick={handleWishlistToggle}
-                className={`absolute z-10 h-9 w-9 rounded-full backdrop-blur-md transition-colors ${wishButtonStyle} ${
-                  isWishlisted
+                className={`absolute z-10 h-9 w-9 rounded-full backdrop-blur-md transition-colors ${wishButtonStyle} ${isWishlisted
                     ? 'bg-destructive/20 text-destructive hover:bg-destructive/30'
                     : 'bg-background/80 hover:bg-destructive/10 hover:text-destructive'
-                }`}
+                  }`}
               >
                 <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current' : ''}`} />
               </Button>
@@ -142,11 +141,10 @@ export default function GameCard({
                   size="icon"
                   variant="ghost"
                   onClick={handleWishlistToggle}
-                  className={`absolute z-10 h-9 w-9 rounded-full backdrop-blur-md transition-colors ${wishButtonStyle} ${
-                    isWishlisted
+                  className={`absolute z-10 h-9 w-9 rounded-full backdrop-blur-md transition-colors ${wishButtonStyle} ${isWishlisted
                       ? "bg-destructive/20 text-destructive hover:bg-destructive/30"
                       : "bg-background/80 hover:bg-destructive/10 hover:text-destructive"
-                  }`}
+                    }`}
                 >
                   <Heart className={`h-5 w-5 ${isWishlisted ? "fill-current" : ""}`} />
                 </Button>
