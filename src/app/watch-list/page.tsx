@@ -18,7 +18,7 @@ export default function WishlistPage() {
           <div>
             <h1 className="text-3xl font-bold mb-1">🎮 My Wishlist</h1>
             <p className="text-muted-foreground text-sm">
-              Here are the games you've added to your wishlist.
+              Here are the games you&apos;ve added to your wishlist.
             </p>
           </div>
 
