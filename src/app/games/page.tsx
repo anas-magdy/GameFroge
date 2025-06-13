@@ -1,3 +1,4 @@
+// app/games/page.tsx
 'use client';
 
 import { useState, useEffect, ChangeEvent } from 'react';
@@ -7,6 +8,7 @@ import { Button } from '@/app/(components)/ui/button';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { fetshAllData } from '@/lib/data';
 import { Input } from '@/app/(components)/ui/input';
+import Link from 'next/link';
 
 interface ApiGame {
   id: number;
@@ -39,13 +41,13 @@ export default function GamesPage() {
         setLoading(true);
         const data = await fetshAllData();
 
-        // Transform the API data to match our Game interface
         const transformedData = data.map((game: ApiGame) => ({
+          id: game.id, // ✅ add id here
           title: game.title,
           description: game.short_description,
-          rating: 4.5, // API doesn't provide rating, using a default value
+          rating: 4.5,
           imageUrl: game.thumbnail,
-          price: 'Free to Play' // All games are free to play
+          price: 'Free to Play',
         }));
 
         setGames(transformedData);
@@ -61,17 +63,16 @@ export default function GamesPage() {
     fetchGames();
   }, []);
 
-  // Filter games based on search query
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredGames(games);
     } else {
-      const filtered = games.filter(game =>
+      const filtered = games.filter((game) =>
         game.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredGames(filtered);
     }
-    setCurrentPage(1); // Reset to first page when search changes
+    setCurrentPage(1);
   }, [searchQuery, games]);
 
   const totalPages = Math.ceil(filteredGames.length / ITEMS_PER_PAGE);
@@ -80,29 +81,11 @@ export default function GamesPage() {
   const currentGames = filteredGames.slice(startIndex, endIndex);
 
   if (loading) {
-    return (
-      <div className="min-h-screen p-8 sm:p-20 font-sans bg-background text-foreground">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">All Games</h1>
-          <div className="flex justify-center items-center h-64">
-            <p>Loading games...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="p-8 text-center">Loading games...</div>;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen p-8 sm:p-20 font-sans bg-background text-foreground">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">All Games</h1>
-          <div className="flex justify-center items-center h-64">
-            <p className="text-red-500">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="p-8 text-red-500 text-center">{error}</div>;
   }
 
   return (
@@ -124,57 +107,45 @@ export default function GamesPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
           {currentGames.map((game) => (
-            <GameCard
-              key={game.title}
-              title={game.title}
-              description={game.description}
-              rating={game.rating}
-              imageUrl={game.imageUrl}
-              isWishlisted={isWishlisted(game.title)}
-              onWishlistToggle={() =>
-                isWishlisted(game.title)
-                  ? removeFromWishlist(game.title)
-                  : addToWishlist(game)
-              }
-            />
+            <Link key={game.id} href={`/games/${game.id}`}>
+              <GameCard
+                title={game.title}
+                description={game.description}
+                rating={game.rating}
+                imageUrl={game.imageUrl}
+                isWishlisted={isWishlisted(game.title)}
+                onWishlistToggle={() =>
+                  isWishlisted(game.title)
+                    ? removeFromWishlist(game.title)
+                    : addToWishlist(game)
+                }
+              />
+            </Link>
           ))}
         </div>
 
-        {filteredGames.length > 0 && (
-          <div className="flex justify-center items-center gap-4 mt-8">
-            <Button
-              variant="outline"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="gap-2"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Previous
-            </Button>
-
-            <span className="text-sm">
-              Page {currentPage} of {totalPages}
-            </span>
-
-            <Button
-              variant="outline"
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="gap-2"
-            >
-              Next
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
-
-        {filteredGames.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">No games found matching your search.</p>
-          </div>
-        )}
+        <div className="flex justify-center items-center gap-4 mt-8">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="gap-2"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Previous
+          </Button>
+          <span className="text-sm">Page {currentPage} of {totalPages}</span>
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="gap-2"
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
-
     </div>
   );
 }
