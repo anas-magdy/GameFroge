@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { 
   FaGamepad, FaCalendarAlt, FaUsers, 
   FaSteam, FaWindows, FaPlaystation, FaXbox, 
-  FaHeart, FaRegHeart 
+  FaHeart, FaRegHeart, FaStar, FaUser 
 } from 'react-icons/fa';
 import { Button } from '@/app/(components)/ui/button';
 import Link from 'next/link';
@@ -44,33 +44,83 @@ interface Game {
   };
 }
 
+interface Review {
+  id: number;
+  user: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
 export default function GameDetailsPage({ params }: { params: { id: number } }) {
   const { id } = params; 
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
   const [animation, setAnimation] = useState(false);
 
+  // Sample reviews data
+  const [reviews] = useState<Review[]>([
+    {
+      id: 1,
+      user: "GamerPro123",
+      rating: 5,
+      comment: "One of the best games I've played this year! The graphics are amazing and the gameplay is smooth.",
+      date: "2023-05-15"
+    },
+    {
+      id: 2,
+      user: "GameCritic",
+      rating: 4,
+      comment: "Great story and characters, but the controls could be more responsive.",
+      date: "2023-04-22"
+    },
+    {
+      id: 3,
+      user: "CasualPlayer",
+      rating: 3,
+      comment: "Fun game but gets repetitive after a while. Worth the price though.",
+      date: "2023-03-10"
+    }
+  ]);
+
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
 
-useEffect(() => {
-  const fetchGame = async () => {
-    try {
-      const data = await fetshGameDetails(id); // استخدم id هنا
-      setGame(data);
-    } catch (error) {
-      console.error("Error fetching game:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchGame();
-}, [id]);
+  useEffect(() => {
+    const fetchGame = async () => {
+      try {
+        const data = await fetshGameDetails(id);
+        setGame(data);
+      } catch (error) {
+        console.error("Error fetching game:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGame();
+  }, [id]);
+
   if (loading) {
-    return <div className="p-10 text-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full"
+        />
+      </div>
+    );
   }
 
   if (!game) {
-    return <div className="p-10 text-red-500">Game not found</div>;
+    return (
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen flex items-center justify-center"
+      >
+        <div className="p-10 text-red-500 text-xl">Game not found</div>
+      </motion.div>
+    );
   }
 
   const handleWishlistToggle = () => {
@@ -87,7 +137,6 @@ useEffect(() => {
       });
       toast.success("Added to wishlist");
     }
-
     setAnimation(true);
     setTimeout(() => setAnimation(false), 500);
   };
@@ -99,21 +148,48 @@ useEffect(() => {
     xbox: <FaXbox className="text-green-600" />
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen p-8 sm:p-20 font-sans bg-background text-foreground">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="min-h-screen p-8 sm:p-20 font-sans bg-background text-foreground"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Breadcrumb */}
-        <div className="mb-6">
+        <motion.div variants={itemVariants} className="mb-6">
           <Link href="/games">
             <Button variant="ghost" className="gap-2">
               <ChevronLeft className="w-4 h-4" />
               Back to Games
             </Button>
           </Link>
-        </div>
+        </motion.div>
 
         {/* Game Header */}
-        <div className="relative rounded-xl overflow-hidden mb-8 h-96">
+        <motion.div variants={itemVariants} className="relative rounded-xl overflow-hidden mb-8 h-96">
           <Image
             src={game.thumbnail}
             alt={game.title}
@@ -135,35 +211,79 @@ useEffect(() => {
             <h1 className="text-4xl md:text-5xl font-bold mb-4">{game.title}</h1>
             <div className="flex flex-wrap gap-2 mb-6">
               {game.genre.split(",").map((genre: string, index: Key) => (
-                <span
+                <motion.span
                   key={index}
                   className="bg-muted px-3 py-1 rounded-full text-sm"
+                  variants={itemVariants}
                 >
                   {genre.trim()}
-                </span>
+                </motion.span>
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-8">
-            <section>
+            <motion.section variants={itemVariants}>
               <h2 className="text-2xl font-bold mb-4">About</h2>
               <p className="text-muted-foreground leading-relaxed">
                 {game.description || game.short_description}
               </p>
-            </section>
+            </motion.section>
 
-            <section>
+            {/* Reviews Section */}
+            <motion.section variants={itemVariants} className="space-y-6">
+              <h2 className="text-2xl font-bold mb-4">Player Reviews</h2>
+              <div className="space-y-4">
+                {reviews.map((review) => (
+                  <motion.div 
+                    key={review.id}
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-muted p-4 rounded-lg border"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <FaUser className="text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">{review.user}</h3>
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <FaStar 
+                              key={i} 
+                              className={i < review.rating ? "text-yellow-400" : "text-muted-foreground/30"} 
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground">{review.comment}</p>
+                    <p className="text-sm text-muted-foreground/70 mt-2">{review.date}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.section>
+
+            {/* Screenshots */}
+            <motion.section variants={itemVariants}>
               <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
               {game.screenshots && game.screenshots.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {game.screenshots.map((screenshot: { id: Key; image: string | StaticImport }) => (
-                    <div
+                <motion.div 
+                  className="grid grid-cols-2 md:grid-cols-3 gap-4"
+                  variants={containerVariants}
+                >
+                  {game.screenshots.map((screenshot, index) => (
+                    <motion.div
                       key={screenshot.id}
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.05 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ delay: index * 0.1 }}
                       className="aspect-video bg-muted rounded-lg overflow-hidden border"
                     >
                       <Image
@@ -173,26 +293,28 @@ useEffect(() => {
                         height={225}
                         className="object-cover w-full h-full"
                       />
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               ) : (
                 <p className="text-muted-foreground">No screenshots available</p>
               )}
-            </section>
+            </motion.section>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <a
+            <motion.a
               href={game.game_url}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-md w-full gap-2"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               <FaGamepad />
               Play Now
-            </a>
+            </motion.a>
 
             {/* Wishlist Button */}
             <motion.button
@@ -219,7 +341,10 @@ useEffect(() => {
             </motion.button>
 
             {/* Game Details */}
-            <div className="bg-muted p-6 rounded-lg border">
+            <motion.div 
+              className="bg-muted p-6 rounded-lg border"
+              whileHover={{ y: -5 }}
+            >
               <h3 className="text-xl font-semibold mb-4">Details</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
@@ -250,11 +375,14 @@ useEffect(() => {
                   </div>
                 </li>
               </ul>
-            </div>
+            </motion.div>
 
             {/* System Requirements */}
             {game.minimum_system_requirements && (
-              <div className="bg-muted p-6 rounded-lg border">
+              <motion.div 
+                className="bg-muted p-6 rounded-lg border"
+                whileHover={{ y: -5 }}
+              >
                 <h3 className="text-xl font-semibold mb-4">System Requirements</h3>
                 <ul className="space-y-3">
                   <li><span className="text-green-300">OS:</span> {game.minimum_system_requirements.os}</li>
@@ -263,11 +391,11 @@ useEffect(() => {
                   <li><span className="text-green-300">Graphics:</span> {game.minimum_system_requirements.graphics}</li>
                   <li><span className="text-green-300">Storage:</span> {game.minimum_system_requirements.storage}</li>
                 </ul>
-              </div>
+              </motion.div>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
