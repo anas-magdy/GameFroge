@@ -1,8 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, Key } from 'react';
 
 export interface Game {
+  id: Key | null | undefined;
   title: string;
   description: string;
   rating: number;
