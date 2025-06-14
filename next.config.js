@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     domains: [
       "www.freetogame.com",
+      
       "freetogame.com",
       "lh3.googleusercontent.com",
     ],

@@ -8,6 +8,8 @@ import { allGames } from "../lib/data";
 import { Game, useWishlist } from "./context/WishlistContext";
 import { Heart } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
+import Image from "next/image";
 
 
 const slides = [
@@ -33,9 +35,22 @@ export default function Home() {
   const goToPrev = () => setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   const goToNext = () => setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
 
+
+
   // Projects Data
   const [projects, setProjects] = useState<(Game & {id: number})[]>([]);
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
+
+    // Toggle Wishlist Functionality
+   const toggleWishlist = (game: Game) => {
+    if (isWishlisted(game.id)) {
+      removeFromWishlist(game.id);
+      toast.success(`${game.title} removed from wishlist`);
+    } else {
+      addToWishlist(game);
+      toast.success(`${game.title} added to wishlist`);
+    }
+  };
 
   useEffect(() => {
     setProjects(
@@ -139,7 +154,13 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {projects.map((game) => (
             <div key={game.id} className="relative flex flex-col gap-6 sm:gap-0 group cursor-pointer">
-              <img src={game.imageUrl} alt={game.title} className="rounded-xl object-cover w-full h-55 bg-black/60 min-h-[220px] max-h-[260px]" />
+              <Image 
+                src={game.imageUrl as string} 
+                alt={game.title} 
+                width={500}
+                height={300}
+                className="rounded-xl object-cover w-full h-55 bg-black/60 min-h-[220px] max-h-[260px]" 
+              />
               {/* Overlay النص وزر show more وwishlist */}
               <div className="absolute inset-0 w-full flex flex-col items-center justify-center bg-black/80 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                 <h3 className="text-2xl w-80 text-center md:text-3xl font-extrabold text-white mb-4" style={{ fontFamily: 'Orbitron, sans-serif', whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis' }}>
@@ -156,15 +177,22 @@ export default function Home() {
                   </Link>
              
                   <button
-                    className={`flex items-center cursor-pointer justify-center w-10 h-10 rounded-full border-2 transition-all duration-200 ${isWishlisted(game.title) ? 'bg-green-500 border-green-700 text-white' : 'bg-white/10 border-white text-green-500 hover:bg-green-100'}`}
-                    onClick={() => isWishlisted(game.title) ? removeFromWishlist(game.title) : addToWishlist({
-                      title: game.title,
-                      description: game.description,
-                      rating: 0,
-                      imageUrl: game.imageUrl,
-                    })}
+                    className={`flex items-center cursor-pointer justify-center w-10 h-10 rounded-full border-2 
+                    transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-md
+                    ${isWishlisted(game.id) 
+                      ? 'bg-green-600 border-green-400 text-white hover:bg-green-700' 
+                      : 'bg-white/15 backdrop-blur-sm border-white/70 text-green-400 hover:bg-green-100/20'}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleWishlist(game);
+                    }}
+                    aria-label={`${isWishlisted(game.id) ? 'Remove from' : 'Add to'} wishlist`}
+                    title={`${isWishlisted(game.id) ? 'Remove from' : 'Add to'} wishlist`}
                   >
-                    <Heart className={`w-6 h-6 ${isWishlisted(game.title) ? 'fill-current' : ''}`} />
+                    <Heart 
+                      className={`w-6 h-6 transition-all duration-300 
+                      ${isWishlisted(game.id) ? 'fill-current animate-pulse' : 'hover:text-green-300'}`}
+                    />
                   </button>
                 </div>
               </div>
