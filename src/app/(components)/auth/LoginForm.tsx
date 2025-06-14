@@ -4,12 +4,20 @@ import { loginSchema, LoginSchema } from "@/lib/authSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { AtSign, Eye, EyeOff, KeyRound, Loader2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/components/ui/separator";
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -36,22 +44,26 @@ export default function LoginForm() {
   const handleGoogleLogin = () => {
     setLoading(true);
     // TODO: Implement Google OAuth login
-    console.log("Google login initiated");
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000); // Simulate API call
+    signIn("google", { redirect: true, callbackUrl: "/profile" });
   };
 
   return (
     <Card className="w-full">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Welcome back</CardTitle>
-        <CardDescription className="text-center">Enter your credentials to sign in to your account</CardDescription>
+        <CardTitle className="text-2xl font-bold text-center">
+          Welcome back
+        </CardTitle>
+        <CardDescription className="text-center">
+          Enter your credentials to sign in to your account
+        </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-foreground">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-foreground"
+            >
               Email
             </label>
             <div className="relative">
@@ -60,7 +72,9 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 placeholder="your.email@example.com"
-                className={`pl-10 ${errors.email ? "border-destructive ring-destructive/50" : ""}`}
+                className={`pl-10 ${
+                  errors.email ? "border-destructive ring-destructive/50" : ""
+                }`}
                 {...register("email")}
               />
             </div>
@@ -70,7 +84,10 @@ export default function LoginForm() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium text-foreground ">
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-foreground "
+            >
               Password
             </label>
             <div className="relative">
@@ -79,7 +96,11 @@ export default function LoginForm() {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className={`pl-10 ${errors.password ? "border-destructive ring-destructive/50" : ""}`}
+                className={`pl-10 ${
+                  errors.password
+                    ? "border-destructive ring-destructive/50"
+                    : ""
+                }`}
                 {...register("password")}
               />
               <button
@@ -91,10 +112,11 @@ export default function LoginForm() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.password.message}
+              </p>
             )}
           </div>
-
         </CardContent>
         <CardFooter className="flex flex-col gap-4 mt-5">
           <Button
@@ -111,18 +133,20 @@ export default function LoginForm() {
               "Login"
             )}
           </Button>
-          
+
           <div className="relative w-full">
             <Separator className="my-4" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="bg-card px-2 text-xs text-muted-foreground">OR</span>
+              <span className="bg-card px-2 text-xs text-muted-foreground">
+                OR
+              </span>
             </div>
           </div>
-          
-          <Button 
-            type="button" 
-            variant="outline" 
-            className="w-full cursor-pointer" 
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full cursor-pointer"
             onClick={handleGoogleLogin}
             disabled={loading}
           >
@@ -150,11 +174,13 @@ export default function LoginForm() {
         </CardFooter>
       </form>
       <div className="mt-4 text-center text-sm">
-        <span className="text-muted-foreground">Don&apos;t have an account? </span>
+        <span className="text-muted-foreground">
+          Don&apos;t have an account?{" "}
+        </span>
         <Link href="/auth/register" className="text-primary hover:underline">
-            Register here
+          Register here
         </Link>
       </div>
     </Card>
-  )
+  );
 }

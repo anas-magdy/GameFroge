@@ -10,6 +10,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { signIn } from "next-auth/react";
 
 export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
@@ -39,10 +40,7 @@ export default function RegisterForm() {
   const handleGoogleLogin = () => {
     setLoading(true);
     // TODO: Implement Google OAuth login
-    console.log("Google login initiated");
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000); // Simulate API call
+    signIn("google", { redirect: true, callbackUrl: "/profile" });
   };
 
   return (
