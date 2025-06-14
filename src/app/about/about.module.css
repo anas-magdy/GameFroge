@@ -1,0 +1,75 @@
+/* styles/about.module.css */
+
+.aboutContainer {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .aboutContainer {
+    padding: 3rem 1.5rem;
+  }
+}
+
+.title {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-emphasis-color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.gradientText {
+  background-image: linear-gradient(to right, var(--primary), var(--secondary));
+}
+
+.teamCard {
+  background-color: var(--card);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.teamCard:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.teamImage {
+  border-radius: 9999px;
+  overflow: hidden;
+  border-width: 2px;
+  border-color: var(--primary);
+  width: 6rem;
+  height: 6rem;
+  margin-bottom: 1rem;
+}
+
+.ctaSection {
+  background: linear-gradient(to right, rgba(var(--primary-rgb), 0.1), rgba(var(--secondary-rgb), 0.1));
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.prose {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+}
