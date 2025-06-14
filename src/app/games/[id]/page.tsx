@@ -124,8 +124,8 @@ export default function GameDetailsPage({ params }: { params: { id: number } }) 
   }
 
   const handleWishlistToggle = () => {
-    if (isWishlisted(game.title)) {
-      removeFromWishlist(game.title);
+    if (isWishlisted(game.id)) {
+      removeFromWishlist(game.id);
       toast.success("Removed from wishlist");
     } else {
       addToWishlist({
@@ -327,7 +327,7 @@ export default function GameDetailsPage({ params }: { params: { id: number } }) 
                   : {}
               }
             >
-              {isWishlisted(game.title) ? (
+              {isWishlisted(game.id) ? (
                 <>
                   <FaHeart className="text-red-500" />
                   <span>In Wishlist</span>
