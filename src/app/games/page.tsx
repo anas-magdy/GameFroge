@@ -42,7 +42,7 @@ export default function GamesPage() {
         const data = await fetshAllData();
 
         const transformedData = data.map((game: ApiGame) => ({
-          id: game.id, // ✅ add id here
+          id: game.id,
           title: game.title,
           description: game.short_description,
           rating: 4.5,
