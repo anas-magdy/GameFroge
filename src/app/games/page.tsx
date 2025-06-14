@@ -1,6 +1,6 @@
 // app/games/page.tsx
 'use client';
-
+import { toast } from 'sonner';
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useWishlist, Game } from '../context/WishlistContext';
 import GameCard from '../(components)/shared/GameCard';
@@ -87,7 +87,15 @@ export default function GamesPage() {
   if (error) {
     return <div className="p-8 text-red-500 text-center">{error}</div>;
   }
-
+ const toggleWishlist = (game: Game) => {
+    if (isWishlisted(game.id)) {
+      removeFromWishlist(game.id);
+      toast.success(`${game.title} removed from wishlist`);
+    } else {
+      addToWishlist(game);
+      toast.success(`${game.title} added to wishlist`);
+    }
+  };
   return (
     <div className="min-h-screen p-8 sm:p-20 font-sans bg-background text-foreground">
       <div className="max-w-7xl mx-auto">
@@ -106,19 +114,12 @@ export default function GamesPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          {currentGames.map((game) => (
+         {currentGames.map((game) => (
             <Link key={game.id} href={`/games/${game.id}`}>
               <GameCard
-                title={game.title}
-                description={game.description}
-                rating={game.rating}
-                imageUrl={game.imageUrl}
-                isWishlisted={isWishlisted(game.title)}
-                onWishlistToggle={() =>
-                  isWishlisted(game.title)
-                    ? removeFromWishlist(game.title)
-                    : addToWishlist(game)
-                }
+                {...game}            
+                isWishlisted={isWishlisted(game.id)}
+                onWishlistToggle={() => toggleWishlist(game)}
               />
             </Link>
           ))}
