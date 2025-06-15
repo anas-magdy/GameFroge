@@ -59,15 +59,16 @@ export default function Home() {
       <main className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {games.map((game) => (
           <GameCard
-            key={game.title}
+            key={game.id}
+            id={game.id}
             title={game.title}
             description={game.description}
             rating={game.rating}
             imageUrl={game.imageUrl}
-            isWishlisted={isWishlisted(game.title)}
+            isWishlisted={isWishlisted(game.id)}
             onWishlistToggle={() =>
-              isWishlisted(game.title)
-                ? removeFromWishlist(game.title)
+              isWishlisted(game.id)
+                ? removeFromWishlist(game.id)
                 : addToWishlist(game)
             }
             customButton={
