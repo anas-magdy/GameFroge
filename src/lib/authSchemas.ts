@@ -28,22 +28,25 @@ export const loginSchema = z.object({
 export type LoginSchema = z.infer<typeof loginSchema>;
 
 // Registration schema
-export const registerSchema = z
-  .object({
-    name: z
-      .string()
-      .trim()
-      .min(1, "Name is required")
-      .min(2, "Name must be at least 2 characters")
-      .max(50, "Name cannot exceed 50 characters")
-      .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
-    email: emailValidation,
-    password: passwordValidation,
-    confirmPassword: z.string().min(1, "Confirm Password is required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
-  });
+export const registerSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Name is required")
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name cannot exceed 50 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
+  email: emailValidation,
+  password: passwordValidation,
+  confirmPassword: z.string().optional(),
+}).refine((data) => {
+  if (data.confirmPassword) {
+    return data.password === data.confirmPassword;
+  }
+  return true;
+}, {
+  path: ["confirmPassword"],
+  message: "Passwords do not match",
+});
 
 export type RegisterSchema = z.infer<typeof registerSchema>;

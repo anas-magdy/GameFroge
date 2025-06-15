@@ -4,13 +4,21 @@ import { registerSchema, RegisterSchema } from "@/lib/authSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { AtSign, Eye, EyeOff, KeyRound, Loader2, User } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
@@ -24,36 +32,86 @@ export default function RegisterForm() {
   } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
   });
-
   // Submit handler
-  const onSubmit = (data: RegisterSchema) => {
+  const onSubmit = async (data: RegisterSchema) => {
     setLoading(true);
-    // TODO: send to API
-    console.log("Register Data:", data);
-    setTimeout(() => {
-      setLoading(false);
-      console.log("Registration successful");
-    }, 2000); // Simulate API call
-  };
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      });
 
-  // Google login handler
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Registration failed");
+      }
+
+      toast.success("Account created successfully!");
+
+      // Registration successful, now log them in
+      const signInResult = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        throw new Error(signInResult.error);
+      }
+
+      toast.success("Logging you in...");
+
+      // Redirect to profile page after a small delay to show the toast
+      setTimeout(() => {
+        window.location.href = "/profile";
+      }, 1500);
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }; // Google login handler
   const handleGoogleLogin = () => {
     setLoading(true);
+    toast.info("Redirecting to Google login...");
     // TODO: Implement Google OAuth login
-    signIn("google", { redirect: true, callbackUrl: "/profile" });
+    signIn("google", { redirect: true, callbackUrl: "/profile" }).catch(() => {
+      toast.error("Google login failed. Please try again.");
+      setLoading(false);
+    });
   };
 
   return (
     <Card className="w-full">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Create an account</CardTitle>
-        <CardDescription className="text-center">Enter your information to create your account</CardDescription>
+        <CardTitle className="text-2xl font-bold text-center">
+          Create an account
+        </CardTitle>
+        <CardDescription className="text-center">
+          Enter your information to create your account
+        </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           {/* Name field */}
           <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-medium text-foreground">
+            <label
+              htmlFor="name"
+              className="text-sm font-medium text-foreground"
+            >
               Full Name
             </label>
             <div className="relative">
@@ -62,7 +120,9 @@ export default function RegisterForm() {
                 id="name"
                 type="text"
                 placeholder="Ali Mohamed"
-                className={`pl-10 ${errors.name ? "border-destructive ring-destructive/50" : ""}`}
+                className={`pl-10 ${
+                  errors.name ? "border-destructive ring-destructive/50" : ""
+                }`}
                 {...register("name")}
               />
             </div>
@@ -73,7 +133,10 @@ export default function RegisterForm() {
 
           {/* Email field */}
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-foreground">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-foreground"
+            >
               Email
             </label>
             <div className="relative">
@@ -82,7 +145,9 @@ export default function RegisterForm() {
                 id="email"
                 type="email"
                 placeholder="your.email@example.com"
-                className={`pl-10 ${errors.email ? "border-destructive ring-destructive/50" : ""}`}
+                className={`pl-10 ${
+                  errors.email ? "border-destructive ring-destructive/50" : ""
+                }`}
                 {...register("email")}
               />
             </div>
@@ -93,7 +158,10 @@ export default function RegisterForm() {
 
           {/* Password field */}
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium text-foreground">
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-foreground"
+            >
               Password
             </label>
             <div className="relative">
@@ -102,7 +170,11 @@ export default function RegisterForm() {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className={`pl-10 ${errors.password ? "border-destructive ring-destructive/50" : ""}`}
+                className={`pl-10 ${
+                  errors.password
+                    ? "border-destructive ring-destructive/50"
+                    : ""
+                }`}
                 {...register("password")}
               />
               <button
@@ -114,13 +186,18 @@ export default function RegisterForm() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
           {/* Confirm Password field */}
           <div className="space-y-2">
-            <label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
+            <label
+              htmlFor="confirmPassword"
+              className="text-sm font-medium text-foreground"
+            >
               Confirm Password
             </label>
             <div className="relative">
@@ -129,7 +206,11 @@ export default function RegisterForm() {
                 id="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className={`pl-10 ${errors.confirmPassword ? "border-destructive ring-destructive/50" : ""}`}
+                className={`pl-10 ${
+                  errors.confirmPassword
+                    ? "border-destructive ring-destructive/50"
+                    : ""
+                }`}
                 {...register("confirmPassword")}
               />
               <button
@@ -141,7 +222,9 @@ export default function RegisterForm() {
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.confirmPassword.message}
+              </p>
             )}
           </div>
         </CardContent>
@@ -160,18 +243,20 @@ export default function RegisterForm() {
               "Create account"
             )}
           </Button>
-          
+
           <div className="relative w-full">
             <Separator className="my-4" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="bg-card px-2 text-xs text-muted-foreground">OR</span>
+              <span className="bg-card px-2 text-xs text-muted-foreground">
+                OR
+              </span>
             </div>
           </div>
-          
-          <Button 
-            type="button" 
-            variant="outline" 
-            className="w-full cursor-pointer" 
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full cursor-pointer"
             onClick={handleGoogleLogin}
             disabled={loading}
           >

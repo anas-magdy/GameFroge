@@ -18,33 +18,59 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const {
     handleSubmit,
     register,
     formState: { errors },
+    setError,
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginSchema) => {
+  const onSubmit = async (data: LoginSchema) => {
     setLoading(true);
-    console.log("Login Data:", data);
-    // TODO: send to API
-    setTimeout(() => {
+    try {
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("root", {
+          type: "manual",
+          message: result.error,
+        });
+        toast.error(result.error);
+        return;
+      }
+
+      // Successful login
+      toast.success("Login successful!");
+      router.push("/profile");
+      router.refresh();
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("An error occurred during login");
+    } finally {
       setLoading(false);
-      console.log("Login successful");
-    }, 2000); // Simulate API call
+    }
   };
 
   const handleGoogleLogin = () => {
     setLoading(true);
-    // TODO: Implement Google OAuth login
-    signIn("google", { redirect: true, callbackUrl: "/profile" });
+    signIn("google", { 
+      callbackUrl: "/profile",
+      redirect: true,
+    });
   };
 
   return (
@@ -86,7 +112,7 @@ export default function LoginForm() {
           <div className="space-y-2">
             <label
               htmlFor="password"
-              className="text-sm font-medium text-foreground "
+              className="text-sm font-medium text-foreground"
             >
               Password
             </label>
@@ -97,27 +123,34 @@ export default function LoginForm() {
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 className={`pl-10 ${
-                  errors.password
-                    ? "border-destructive ring-destructive/50"
-                    : ""
+                  errors.password ? "border-destructive ring-destructive/50" : ""
                 }`}
                 {...register("password")}
               />
               <button
                 type="button"
-                className="absolute right-3 top-2.5 h-5 w-5 text-muted-foreground hover:text-foreground"
                 onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-destructive">
-                {errors.password.message}
-              </p>
+              <p className="text-sm text-destructive">{errors.password.message}</p>
             )}
           </div>
+
+          {errors.root && (
+            <p className="text-sm text-destructive text-center">
+              {errors.root.message}
+            </p>
+          )}
         </CardContent>
+
         <CardFooter className="flex flex-col gap-4 mt-5">
           <Button
             type="submit"
