@@ -78,9 +78,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/70 z-0" />
         <div className="relative z-10 w-full max-w-7xl mt-5">
           <div className="relative w-full h-[600px] flex items-center justify-center select-none">
-            <img
+            <Image
               src={slides[current].image}
               alt={slides[current].title}
+              fill
               className="w-full h-full object-cover rounded-2xl border-4 border-green-700 shadow-xl"
               style={{ filter: "brightness(0.7)" }}
             />

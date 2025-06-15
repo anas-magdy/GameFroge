@@ -9,25 +9,34 @@ export async function POST(req: Request) {
     let body;
     try {
       body = await req.json();
-    } catch (e) {
+    } catch (err) {
+      console.log(err)
       return NextResponse.json(
         { error: 'Invalid JSON in request body' },
         { status: 400 }
       );
     }
-    
+
     // Validate request body
     const result = registerSchema.safeParse(body);
     if (!result.success) {
       const formattedErrors = result.error.format();
       const errorMessages = Object.entries(formattedErrors)
         .filter(([key]) => key !== '_errors')
-        .map(([key, value]) => `${key}: ${value._errors.join(', ')}`)
+        .map(([key, value]) => {
+          if (Array.isArray(value)) {
+            return `${key}: ${value.join(', ')}`;
+          }
+          if (value && typeof value === 'object' && '_errors' in value) {
+            return `${key}: ${value._errors.join(', ')}`;
+          }
+          return `${key}: Invalid value`;
+        })
         .join('; ');
 
       return NextResponse.json(
-        { 
-          error: 'Validation failed', 
+        {
+          error: 'Validation failed',
           details: errorMessages || 'Invalid request data'
         },
         { status: 400 }
@@ -74,9 +83,9 @@ export async function POST(req: Request) {
       };
 
       return NextResponse.json(
-        { 
-          message: 'User registered successfully', 
-          user: userWithoutPassword 
+        {
+          message: 'User registered successfully',
+          user: userWithoutPassword
         },
         { status: 201 }
       );

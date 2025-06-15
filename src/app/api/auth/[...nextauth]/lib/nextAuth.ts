@@ -1,16 +1,22 @@
+// src/lib/authOptions.ts أو حسب مكان ملفك
 import { type AuthOptions, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 
-// Extend the built-in session types
+// ✅ توسيع الـ Session interface
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
       emailVerified: boolean;
-    } & DefaultSession["user"]
+    } & DefaultSession["user"];
+  }
+
+  interface User {
+    id: string;
+    emailVerified?: boolean;
   }
 }
 
@@ -24,9 +30,11 @@ export const authOptions: AuthOptions = {
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(
+        credentials: { email: string; password: string } | undefined
+      ) {
         try {
           if (!credentials?.email || !credentials?.password) {
             throw new Error("Please enter an email and password");
@@ -55,18 +63,18 @@ export const authOptions: AuthOptions = {
           console.error("Auth error:", error);
           throw error;
         }
-      }
-    })
+      },
+    }),
   ],
   session: {
     strategy: "jwt",
-    maxAge: 1 * 24 * 60 * 60, // 1 day
+    maxAge: 1 * 24 * 60 * 60, // 1 يوم
   },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.emailVerified = user.emailVerified;
+        token.emailVerified = user?.emailVerified;
       }
       return token;
     },
