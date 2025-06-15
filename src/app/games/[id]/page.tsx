@@ -11,7 +11,7 @@ import {
 import { Button } from '@/app/(components)/ui/button';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { Key } from 'react';
+import { Key, use } from 'react';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { toast } from 'sonner';
@@ -52,8 +52,11 @@ interface Review {
   date: string;
 }
 
-export default function GameDetailsPage({ params }: { params: { id: number } }) {
-  const { id } = params; 
+export default  function GameDetailsPage({ params }: { params: { id: string } }) {
+  console.log(params)
+  const { id } = use(params)
+  console.log(id)
+  
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
   const [animation, setAnimation] = useState(false);
