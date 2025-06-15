@@ -10,30 +10,35 @@ export default function Home() {
 
   const games = [
     {
+      id: 1,
       title: 'GTA V',
       description: 'Explore the criminal underworld of Los Santos.',
       rating: 4.7,
       imageUrl: '/image.png',
     },
     {
+      id: 2,
       title: 'Call of Duty',
       description: 'Engage in modern warfare with intense combat.',
       rating: 4.5,
       imageUrl: '/image.png',
     },
     {
+      id: 3,
       title: 'Cyberpunk 2077',
       description: 'Dive into a dystopian open-world future.',
       rating: 4.3,
       imageUrl: '/image.png',
     },
     {
+      id: 4,
       title: 'Mystery Game',
       description: 'A mysterious title with hidden gameplay.',
       rating: 4.0,
       imageUrl: '/image.png',
     },
     {
+      id: 5,
       title: 'GameX Alpha',
       description:
         'A very long and detailed game description that tests layout wrapping and overflow.',
@@ -54,7 +59,7 @@ export default function Home() {
       <main className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {games.map((game) => (
           <GameCard
-            key={game.title}
+            key={game.id}
             {...game}
             isWishlisted={isWishlisted(game.title)}
             onWishlistToggle={() =>
