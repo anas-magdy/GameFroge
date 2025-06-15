@@ -60,11 +60,7 @@ export default function Home() {
         {games.map((game) => (
           <GameCard
             key={game.id}
-            id={game.id}
-            title={game.title}
-            description={game.description}
-            rating={game.rating}
-            imageUrl={game.imageUrl}
+            {...game}
             isWishlisted={isWishlisted(game.id)}
             onWishlistToggle={() =>
               isWishlisted(game.id)
