@@ -8,7 +8,7 @@ import SharedButton from '@/app/(components)/shared/SharedButton';
 import Link from 'next/link';
 import { FaLinkedin } from 'react-icons/fa';
 import styles from './about.module.css';
-
+import Image from 'next/image';
 // بيانات فريق العمل
 const teamMembers = [
   {
@@ -163,7 +163,7 @@ export default function About() {
                     whileHover={{ scale: 1.05 }}
                     className={styles.teamImage}
                   >
-                    <img
+                    <Image
                       src={member.image}
                       alt={member.name}
                       className="rounded-full object-cover w-24 h-24"

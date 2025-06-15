@@ -18,7 +18,7 @@ export default function WishlistPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
           <div>
             <h1 className="text-3xl font-bold mb-1">🎮 My Wishlist</h1>
-            <p className="text-muted-foreground text-sm">Games you've added to your wishlist.</p>
+            <p className="text-muted-foreground text-sm">Games you&aposve added to your wishlist.</p>
           </div>
 
           {wishlist.length > 0 && (

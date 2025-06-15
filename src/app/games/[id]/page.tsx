@@ -1,6 +1,5 @@
 
 'use client';
-
 import { fetshGameDetails } from '@/lib/data';
 import Image from 'next/image';
 import { 
@@ -11,12 +10,13 @@ import {
 import { Button } from '@/app/(components)/ui/button';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { Key, use } from 'react';
+import { Key } from 'react';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useParams } from 'next/navigation';
 
 interface Game {
   id: number;
@@ -52,12 +52,13 @@ interface Review {
   date: string;
 }
 
-export default  function GameDetailsPage({ params }: { params: { id: string } }) {
-  console.log(params)
-  const { id } = use(params)
-  console.log(id)
+export default  function GameDetailsPage() {
+  const params = useParams();
+  const id = params?.id as string;
+  
   
   const [game, setGame] = useState<Game | null>(null);
+  console.log(game)
   const [loading, setLoading] = useState(true);
   const [animation, setAnimation] = useState(false);
 
@@ -197,8 +198,9 @@ export default  function GameDetailsPage({ params }: { params: { id: string } })
             src={game.thumbnail}
             alt={game.title}
             fill
+            quality={100}
             className="object-cover opacity-70"
-            priority
+          
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           <div className="relative z-10 h-full flex flex-col justify-end p-6 md:p-8">

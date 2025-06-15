@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react";
+import Image from "next/image";
 
 export default function HowWeWorkVideo() {
     const [playing, setPlaying] = useState(false);
@@ -25,8 +26,10 @@ export default function HowWeWorkVideo() {
         
         {!playing ? (
           <>
-            <img
+            <Image
               src={thumbnailUrl}
+              width={100}
+              height={100}
               alt="Video thumbnail"
               className="w-full h-[450px] object-cover relative z-10 rounded-2xl border-4 border-green-500 shadow-xl"
             />

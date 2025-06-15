@@ -1,6 +1,4 @@
 'use client';
-import { toast } from 'sonner';
-
 import React, { MouseEvent, ReactNode } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/app/(components)/ui/card';
