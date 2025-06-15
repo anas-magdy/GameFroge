@@ -7,7 +7,7 @@ import { Heart, Star, Trash2 } from 'lucide-react';
 import SharedButton from './SharedButton';
 
 interface GameCardProps {
-  id: number;
+  id?: number;
   title?: string;
   description?: string;
   rating?: string | number;
@@ -17,7 +17,7 @@ interface GameCardProps {
   deleteIcon?: boolean;
   wishIcon?: boolean;
   customButton?: ReactNode;
-  onWishlistToggle?: (id: number) => void;
+  onWishlistToggle?: (id?: number) => void;
   isWishlisted?: boolean;
   buttonProps?: React.ComponentProps<typeof SharedButton>;
   insideImageOnly?: boolean;
