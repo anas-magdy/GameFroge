@@ -57,33 +57,32 @@ export default function Home() {
       </header>
 
       <main className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {games.map((game) => {
-          const { id, ...gameProps } = game;
-          return (
-            <GameCard
-              key={id}
-              id={id}
-              {...gameProps}
-              isWishlisted={isWishlisted(game.title)}
-              onWishlistToggle={() =>
-                isWishlisted(game.title)
-                  ? removeFromWishlist(game.title)
-                  : addToWishlist(game)
-              }
-              customButton={
-                game.title === 'GameX Alpha' ? (
-                  <SharedButton label="Play Now" iconType="game" />
-                ) : (
-                  <SharedButton
-                    label="Buy Now"
-                    onClick={() => alert(`Added ${game.title} to cart!`)}
-                  />
-                )
-              }
-              insideImageOnly={game.title === 'Mystery Game'}
-            />
-          );
-        })}
+        {games.map((game) => (
+          <GameCard
+            key={game.title}
+            title={game.title}
+            description={game.description}
+            rating={game.rating}
+            imageUrl={game.imageUrl}
+            isWishlisted={isWishlisted(game.title)}
+            onWishlistToggle={() =>
+              isWishlisted(game.title)
+                ? removeFromWishlist(game.title)
+                : addToWishlist(game)
+            }
+            customButton={
+              game.title === 'GameX Alpha' ? (
+                <SharedButton label="Play Now" iconType="game" />
+              ) : (
+                <SharedButton
+                  label="Buy Now"
+                  onClick={() => alert(`Added ${game.title} to cart!`)}
+                />
+              )
+            }
+            insideImageOnly={game.title === 'Mystery Game'}
+          />
+        ))}
       </main>
     </div>
   );
